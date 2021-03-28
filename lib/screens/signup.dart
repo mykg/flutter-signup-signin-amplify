@@ -173,13 +173,13 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       isloading = true;
     });
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-    final name = _nameController.text;
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text;
+    final String name = _nameController.text;
 
     /// In this user attribute, you can define the custom fields associated with the user.
     /// For example birthday, telephone number, etc
-    Map<String, dynamic> userAttributes = {
+    Map<String, String> userAttributes = {
       "email": email,
       "name": name,
     };

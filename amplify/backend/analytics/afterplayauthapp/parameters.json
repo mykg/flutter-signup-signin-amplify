@@ -1,0 +1,21 @@
+{
+    "appName": "afterplayauthapp",
+    "roleName": "pinpointLambdaRole0c119dac",
+    "cloudformationPolicyName": "cloudformationPolicy0c119dac",
+    "cloudWatchPolicyName": "cloudWatchPolicy0c119dac",
+    "pinpointPolicyName": "pinpointPolicy0c119dac",
+    "authPolicyName": "pinpoint_amplify_0c119dac",
+    "unauthPolicyName": "pinpoint_amplify_0c119dac",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}

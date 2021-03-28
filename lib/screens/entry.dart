@@ -1,3 +1,4 @@
+import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
 import 'package:amplify_core/amplify_core.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_login/screens/home.dart';
@@ -29,9 +30,10 @@ class _EntryState extends State<Entry> {
   void _configureAmplify() async {
 
     final auth = AmplifyAuthCognito();
+    final analytics = AmplifyAnalyticsPinpoint();
 
     try {
-      Amplify.addPlugin(auth);
+      Amplify.addPlugins([auth, analytics]);
       await Amplify.configure(amplifyconfig);
       setState(() {
         _amplifyConfigured = true;

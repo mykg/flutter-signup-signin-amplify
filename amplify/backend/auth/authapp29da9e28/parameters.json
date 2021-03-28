@@ -1,6 +1,6 @@
 {
     "identityPoolName": "authapp29da9e28_identitypool_29da9e28",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "authap29da9e28",
     "userPoolName": "authapp29da9e28_userpool_29da9e28",
     "autoVerifiedAttributes": [
