@@ -1,12 +1,17 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_login/constants.dart';
 import 'package:amplify_login/screens/home.dart';
 import 'package:amplify_login/screens/signup.dart';
+import 'package:amplify_login/widgets/forgotPassword.dart';
+import 'package:amplify_login/widgets/text_field_container.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_login/widgets/rounded_pass.dart';
 import 'package:amplify_login/widgets/rounded_input.dart';
 import 'package:amplify_login/widgets/rounded_button.dart';
 import 'package:amplify_login/widgets/already_have_acc_check.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:amplify_login/screens/forgotpassword.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -23,6 +28,7 @@ class _SigninScreenState extends State<SigninScreen> {
 
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _obscureText = true;
 
   @override
   bool isloading = false;
@@ -44,62 +50,77 @@ class _SigninScreenState extends State<SigninScreen> {
                   ),
                   SizedBox(height: size.height * 0.03),
                   SizedBox(height: size.height * 0.03),
-                  new TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    controller: _emailController,
-                    validator: (value) {
-                      final pattern = r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)';
-                      final regExp = RegExp(pattern);
+                  new TextFieldContainer(
+                    child: new TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _emailController,
+                      validator: (value) {
+                        final pattern = r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)';
+                        final regExp = RegExp(pattern);
 
-                      if (!regExp.hasMatch(value)) {
-                        return 'Enter a valid mail';
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: new InputDecoration(
-                      isDense: true, // Added this
-                      contentPadding: EdgeInsets.all(15),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: Color(0xFF2821B5),
+                        if (!regExp.hasMatch(value)) {
+                          return 'Enter a valid email';
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: new InputDecoration(
+                        icon: Icon(
+                          Icons.mail,
+                          color: kPrimaryColor,
                         ),
-                      ),
-                      border: new OutlineInputBorder(
-                          borderSide: new BorderSide(color: Colors.grey)),
-                      labelText: 'Enter E-mail or Phone',
+                        border: InputBorder.none,
+                        hintText: 'Enter your E-mail',
+                        labelText: 'E-mail (Required)',
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
                   ),
-                  new TextFormField(
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
-                    controller: _passwordController,
-                    validator: (value) =>
-                    value.isEmpty ? "Password is invalid" : null,
-                    decoration: new InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.all(15),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: Color(0xFF2821B5),
+                  new TextFieldContainer(
+                    child: new TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: _obscureText,
+                      controller: _passwordController,
+                      validator: (value) =>
+                      value.isEmpty ? "Password is invalid" : null,
+                      decoration: new InputDecoration(
+                        icon: Icon(
+                          Icons.lock,
+                          color: kPrimaryColor,
                         ),
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                          child: Icon(
+                            _obscureText ? Icons.visibility : Icons.visibility_off,
+                            color: kPrimaryColor,
+                          ),
+                        ),
+                        hintText: 'Enter a Password',
+                        labelText: 'Password (Required)',
+                        border: InputBorder.none,
                       ),
-                      border: new OutlineInputBorder(
-                          borderSide: new BorderSide(color: Colors.grey)),
-                      labelText: 'Enter Password',
                     ),
                   ),
                   RoundedButton(
                     text: "LOGIN",
                     press: () {
                       _loginButtonOnPressed(context);
+                    },
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  ForgotPassword(
+                    press: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) {
+                              return ForgotPasswordScreen();
+                           },
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: size.height * 0.03),
@@ -152,13 +173,17 @@ class _SigninScreenState extends State<SigninScreen> {
         );
       }
     }
-    //  on AuthError
-    catch (e) {
-      _scaffoldKey.currentState.showSnackBar(
+    on AuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(e.message),
+      )
+      );
+      /*_scaffoldKey.currentState.showSnackBar(
         SnackBar(
             content: //Text(e.cause),
             Text("Problem logging in. Please try again.")),
-      );
+      );*/
       setState(() {
         isloading = false;
       });

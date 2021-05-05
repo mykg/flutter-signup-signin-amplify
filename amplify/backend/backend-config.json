@@ -5,10 +5,20 @@
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
       "customAuth": false
+    },
+    "authappd084758d": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
     }
   },
   "analytics": {
     "afterplayauthapp": {
+      "service": "Pinpoint",
+      "providerPlugin": "awscloudformation"
+    },
+    "authapp": {
       "service": "Pinpoint",
       "providerPlugin": "awscloudformation"
     }

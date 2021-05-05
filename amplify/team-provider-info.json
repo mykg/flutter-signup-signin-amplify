@@ -16,5 +16,31 @@
         "authapp29da9e28": {}
       }
     }
+  },
+  "env": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-authapp-env-184335-authRole",
+      "UnauthRoleArn": "arn:aws:iam::734625667314:role/amplify-authapp-env-184335-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::734625667314:role/amplify-authapp-env-184335-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-authapp-env-184335-deployment",
+      "UnauthRoleName": "amplify-authapp-env-184335-unauthRole",
+      "StackName": "amplify-authapp-env-184335",
+      "StackId": "arn:aws:cloudformation:ap-south-1:734625667314:stack/amplify-authapp-env-184335/36638960-ab48-11eb-ba95-0268ea50489a",
+      "AmplifyAppId": "dazah2alfqnps"
+    },
+    "categories": {
+      "function": {
+        "authapp8ea360b38ea360b3CustomMessage": {
+          "REDIRECTURL": "",
+          "EMAILSUBJECT": "",
+          "EMAILMESSAGE": ""
+        }
+      },
+      "auth": {
+        "authapp0feb50c5": {},
+        "authappd084758d": {}
+      }
+    }
   }
 }

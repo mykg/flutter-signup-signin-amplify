@@ -1,8 +1,8 @@
+import 'package:amplify_login/constants.dart';
 import 'package:amplify_login/screens/Signin.dart';
 import 'package:amplify_login/screens/emailconfirmscreen.dart';
+import 'package:amplify_login/widgets/text_field_container.dart';
 import 'package:flutter/material.dart';
-import 'package:amplify_login/widgets/rounded_pass.dart';
-import 'package:amplify_login/widgets/rounded_input.dart';
 import 'package:amplify_login/widgets/rounded_button.dart';
 import 'package:amplify_login/widgets/already_have_acc_check.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -23,6 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isloading = false;
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -44,79 +45,78 @@ class _SignupScreenState extends State<SignupScreen> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: size.height * 0.03),
-                    new TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _emailController,
-                      validator: (value) {
-                        final pattern = r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)';
-                        final regExp = RegExp(pattern);
-
-                        if (!regExp.hasMatch(value)) {
-                          return 'Enter a valid mail';
-                        } else {
-                          return null;
-                        }
-                      },
-                      autocorrect: false,
-                      textCapitalization: TextCapitalization.none,
-                      enableSuggestions: false,
-                      decoration: new InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xff002a66),
+                    new TextFieldContainer(
+                      child: new TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _emailController,
+                        validator: (value) {
+                          final pattern = r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)';
+                          final regExp = RegExp(pattern);
+                          if (!regExp.hasMatch(value)) {
+                            return 'Enter a valid mail';
+                          } else {
+                            return null;
+                          }
+                        },
+                        autocorrect: false,
+                        textCapitalization: TextCapitalization.none,
+                        enableSuggestions: false,
+                        cursorColor: kPrimaryColor,
+                        decoration: new InputDecoration(
+                          icon: Icon(
+                            Icons.mail,
+                            color: kPrimaryColor,
                           ),
+                          hintText: 'Enter your E-mail',
+                          labelText: 'E-mail (Required)',
+                          border: InputBorder.none,
                         ),
-                        border: new OutlineInputBorder(
-                            borderSide: new BorderSide(color: Colors.grey)),
-                        hintText: 'Enter your E-mail',
-                        labelText: 'E-mail (Required)',
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    new TextFormField(
-                      controller: _nameController,
-                      decoration: new InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xff002a66),
-                          ),
+                    new TextFieldContainer(
+                      child: new TextFormField(
+                        controller: _nameController,
+                        decoration: new InputDecoration(
+                          /*icon: Icon(
+                            Icons.mail,
+                            color: kPrimaryColor,
+                          ),*/
+                          hintText: 'Enter your Name',
+                          labelText: 'Full Name (Required)',
+                          border: InputBorder.none,
                         ),
-                        border: new OutlineInputBorder(
-                            borderSide: new BorderSide(color: Colors.grey)),
-                        hintText: 'Enter your Name',
-                        labelText: 'Full Name (Required)',
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    new TextFormField(
-                      keyboardType: TextInputType.visiblePassword,
-                      obscureText: true,
-                      controller: _passwordController,
-                      validator: (value) => value.isEmpty
-                          ? "Password is invalid"
-                          : value.length < 9
-                          ? "Password must contain at least 8 characters"
-                          : null,
-                      decoration: new InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xff002a66),
+                    new TextFieldContainer(
+                      child: new TextFormField(
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: _obscureText,
+                        controller: _passwordController,
+                        validator: (value) => value.isEmpty
+                            ? "Password is invalid"
+                            : value.length < 9
+                            ? "Password must contain at least 8 characters"
+                            : null,
+                        decoration: new InputDecoration(
+                          icon: Icon(
+                            Icons.lock,
+                            color: kPrimaryColor,
                           ),
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            child: Icon(
+                              _obscureText ? Icons.visibility : Icons.visibility_off,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                          hintText: 'Enter a Password',
+                          labelText: 'Password (Required)',
+                          border: InputBorder.none,
                         ),
-                        border: new OutlineInputBorder(
-                            borderSide: new BorderSide(color: Colors.grey)),
-                        hintText: 'Enter a Password',
-                        labelText: 'Password (Required)',
                       ),
                     ),
                     RoundedButton(
@@ -131,7 +131,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     AlreadyHaveAnAccountCheck(
                       login: false,
                       press: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) {
@@ -197,8 +197,13 @@ class _SignupScreenState extends State<SignupScreen> {
         _gotToEmailConfirmationScreen(context, email);
       }
     }
-    //on AuthError
-    catch (e) {
+    on AuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.redAccent,
+            content: Text(e.message),
+          )
+      );
       print(e);
       setState(() {
         isloading = false;
@@ -208,7 +213,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     void _gotToEmailConfirmationScreen(BuildContext context, String email) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) =>

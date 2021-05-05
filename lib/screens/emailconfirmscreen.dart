@@ -1,4 +1,5 @@
-import 'package:amplify_login/screens/home.dart';
+import 'package:amplify_login/constants.dart';
+import 'package:amplify_login/screens/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -23,6 +24,17 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
 
   final TextEditingController _confirmationCodeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _confirmationCodeController.addListener(() {
+      setState(() {
+        _isEnabled = _confirmationCodeController.text.isNotEmpty;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +47,10 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
         ),
       );
     } else {
-      ConfirmButton = RaisedButton(
-        onPressed: () {
-          _submitCode(context);
-        },
+      ConfirmButton = MaterialButton(
+        color: kPrimaryColor,
+        disabledColor: Colors.deepPurple.shade200,
+        onPressed: _isEnabled ? () { _submitCode(context); } : null,
         child: Text("CONFIRM"),
       );
     }
@@ -65,12 +77,24 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
                     ? "The confirmation code is invalid"
                     : null,
               ),
-              ConfirmButton
+              ConfirmButton,
+              MaterialButton(
+                  onPressed: () {
+                    _resendCode(context,);
+                  },
+                child: Text('Resend code', style: TextStyle(color: Colors.grey),),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _confirmationCodeController.dispose();
+    super.dispose();
   }
 
   Future<void> _submitCode(BuildContext context) async {
@@ -95,12 +119,49 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
         }
       }
 
-      // on AuthError
-      catch (e) {
-        _scaffoldKey.currentState.showSnackBar(
+      on AuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.redAccent,
+              content: Text(e.message),
+            )
+        );
+        //print(e);
+        //print(e.runtimeType);
+        /*_scaffoldKey.currentState.showSnackBar(
           SnackBar(
-            content: Text(e.cause),
+            //content: Text(e.cause),
           ),
+        );*/
+        setState(() {
+          isloading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _resendCode(BuildContext context) async {
+    if (_formKey.currentState.validate()) {
+      setState(() {
+        isloading = true;
+      });
+      try {
+        await Amplify.Auth.resendSignUpCode(username: widget.email);
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.blueAccent,
+              content: Text('Confirmation code sent. Check email'),
+            )
+        );
+        setState(() {
+          isloading = false;
+        });
+      } on AuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.redAccent,
+              content: Text(e.message),
+            )
         );
         setState(() {
           isloading = false;
@@ -110,7 +171,7 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
   }
 
   void _gotoMainScreen(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => Home()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => SigninScreen()));
   }
 
 }

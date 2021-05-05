@@ -1,8 +1,11 @@
 import 'package:amplify_login/screens/entry.dart';
 import 'package:amplify_login/screens/welcome.dart';
 import 'package:flutter/material.dart';
+import 'helpers/configure_amplify.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureAmplify();
   runApp(MyApp());
 }
 
