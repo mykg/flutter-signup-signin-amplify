@@ -1,5 +1,5 @@
-import 'package:amplify_login/constants.dart';
 import 'package:amplify_login/screens/signin.dart';
+import 'package:amplify_login/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -19,12 +19,12 @@ class EmailConfirmationScreen extends StatefulWidget {
 
 class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
 
-  bool isloading = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final TextEditingController _confirmationCodeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isEnabled = false;
+  bool isloading = false;
 
   @override
   void initState() {
@@ -39,21 +39,37 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
   @override
   Widget build(BuildContext context) {
     // ignore: non_constant_identifier_names
-    Widget ConfirmButton;
+
+    Widget confirmButton;
     if (isloading) {
-      ConfirmButton = Center(
+      confirmButton = Center(
         child: CircularProgressIndicator(
           valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFfbad20)),
         ),
       );
     } else {
-      ConfirmButton = MaterialButton(
-        color: kPrimaryColor,
-        disabledColor: Colors.deepPurple.shade200,
-        onPressed: _isEnabled ? () { _submitCode(context); } : null,
-        child: Text("CONFIRM"),
+      confirmButton = RoundedButton(
+        text: "Confirm",
+        press: _isEnabled ? () {
+          _submitCode(context);
+        } : null,
       );
     }
+
+    /*Widget resendButton;
+    if (isloading) {
+      resendButton = Center(
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFfbad20)),
+        ),
+      );
+    } else {
+      resendButton = RoundedButton(
+        text: "Resend",
+        press: () { _resendCode(context); },
+      );
+    }*/
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -77,12 +93,11 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
                     ? "The confirmation code is invalid"
                     : null,
               ),
-              ConfirmButton,
-              MaterialButton(
-                  onPressed: () {
-                    _resendCode(context,);
-                  },
-                child: Text('Resend code', style: TextStyle(color: Colors.grey),),
+              confirmButton,
+              //resendButton,
+              RoundedButton(
+                text: "Resend",
+                press: () { _resendCode(context); },
               ),
             ],
           ),
@@ -118,7 +133,6 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
           });
         }
       }
-
       on AuthException catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -126,13 +140,6 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
               content: Text(e.message),
             )
         );
-        //print(e);
-        //print(e.runtimeType);
-        /*_scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            //content: Text(e.cause),
-          ),
-        );*/
         setState(() {
           isloading = false;
         });

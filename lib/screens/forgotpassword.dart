@@ -1,7 +1,7 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
-import 'package:amplify_login/constants.dart';
 import 'package:amplify_login/screens/comfirmpassreset.dart';
+import 'package:amplify_login/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,21 +35,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget ConfirmButton;
+    Size size = MediaQuery.of(context).size;
+    Widget confirmButton;
     if (isloading) {
-      ConfirmButton = Center(
+      confirmButton = Center(
         child: CircularProgressIndicator(
           valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFfbad20)),
         ),
       );
     } else {
-      ConfirmButton = MaterialButton(
+      confirmButton = RoundedButton(
+        text: "Recover",
+        press: _isEnabled ? () { String email2; _submitMail(context, email2); } : null,
+      );
+          /*MaterialButton(
         color: kPrimaryColor,
         disabledColor: Colors.deepPurple.shade200,
-        onPressed: _isEnabled ? () { String email2; _submitMail(context, email2); } : null,
+        //onPressed: _isEnabled ? () { String email2; _submitMail(context, email2); } : null,
         //onPressed: (String email) => _submitMail(context, email),
         child: Text("Recover"),
-      );
+      );*/
     }
     return Scaffold(
       key: _scaffoldKey,
@@ -80,7 +85,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   }
                 },
               ),
-              ConfirmButton,
+              SizedBox(height: size.height * 0.03),
+              confirmButton,
             ],
           ),
         ),

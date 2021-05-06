@@ -28,7 +28,19 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
+    Widget signupButton;
+    if (isloading) {
+      signupButton = Center(
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFfbad20)),
+        ),
+      );
+    } else {
+      signupButton = RoundedButton(
+        text: "SIGN UP",
+        press: () { _createAccountOnPressed(context); },
+      );
+    }
     return Scaffold(
       key: _scaffoldKey,
           body: SafeArea(
@@ -119,12 +131,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                     ),
-                    RoundedButton(
-                      text: "SIGNUP",
-                      press: () {
-                        _createAccountOnPressed(context);
-                      },
-                    ),
+                    signupButton,
                     SizedBox(
                       height: 20,
                     ),

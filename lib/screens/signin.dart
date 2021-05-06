@@ -6,14 +6,11 @@ import 'package:amplify_login/screens/signup.dart';
 import 'package:amplify_login/widgets/forgotPassword.dart';
 import 'package:amplify_login/widgets/text_field_container.dart';
 import 'package:flutter/material.dart';
-import 'package:amplify_login/widgets/rounded_pass.dart';
-import 'package:amplify_login/widgets/rounded_input.dart';
 import 'package:amplify_login/widgets/rounded_button.dart';
 import 'package:amplify_login/widgets/already_have_acc_check.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:amplify_login/screens/forgotpassword.dart';
 import 'dart:async';
-import 'dart:io';
 
 class SigninScreen extends StatefulWidget {
   SigninScreen({Key key}) : super(key: key);
@@ -29,11 +26,25 @@ class _SigninScreenState extends State<SigninScreen> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _obscureText = true;
+  bool isloading = false;
 
   @override
-  bool isloading = false;
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    Widget loginButton;
+    if (isloading) {
+      loginButton = Center(
+        child: CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFFfbad20)),
+        ),
+      );
+    } else {
+      loginButton = RoundedButton(
+        text: "LOGIN",
+        press: () { _loginButtonOnPressed(context); },
+      );
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       body: Form(
@@ -104,12 +115,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       ),
                     ),
                   ),
-                  RoundedButton(
-                    text: "LOGIN",
-                    press: () {
-                      _loginButtonOnPressed(context);
-                    },
-                  ),
+                  loginButton,
                   SizedBox(height: size.height * 0.03),
                   ForgotPassword(
                     press: () {
